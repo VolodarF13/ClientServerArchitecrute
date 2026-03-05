@@ -11,28 +11,38 @@ import java.nio.file.Path;
 public class HttpStatusImageDownloader {
 
     private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpStatusChecker httpStatusChecker = new HttpStatusChecker();
 
-    public void downloadStatusImage(int code) throws IOException, InterruptedException {
+    public void downloadStatusImage(int code) {
 
-        Path filePath = Path.of("image",code + ".jpg");
+        try {
+            Path filePath = Path.of("image", code + ".jpg");
 
-        isDirectoryExists(filePath);
+            isDirectoryExists(filePath);
 
-        HttpStatusChecker httpStatusChecker = new HttpStatusChecker();
-        String statusImage = httpStatusChecker.getStatusImage(code);
+            String statusImage = httpStatusChecker.getStatusImage(code);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(statusImage))
-                .GET()
-                .build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(statusImage))
+                    .GET()
+                    .build();
 
-        HttpResponse<Path> response = client.send(request, HttpResponse.BodyHandlers.ofFile(filePath));
+            HttpResponse<Path> response = client.send(request, HttpResponse.BodyHandlers.ofFile(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to download status image", e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to download status image", e);
+        }
 
     }
 
-    private static void isDirectoryExists(Path filePath) throws IOException {
-        if(!Files.exists(filePath.getParent())) {
-            Files.createDirectories(filePath.getParent());
+    private static void isDirectoryExists(Path filePath) {
+        try {
+            if (!Files.exists(filePath.getParent())) {
+                Files.createDirectories(filePath.getParent());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error creating directory: " + filePath.toString(), e);
         }
     }
 }

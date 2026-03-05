@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class HttpStatusChecker {
-    private HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     public String getStatusImage(int code) throws IOException, InterruptedException {
         final String URL = "https://http.cat/" + code + ".jpg";
