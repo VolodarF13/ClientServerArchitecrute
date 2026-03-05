@@ -3,14 +3,14 @@ package goit.http.client;
 import java.util.Scanner;
 
 public class HttpImageStatusCli {
-    void askStatus(){
+    void askStatus() {
         Scanner input = new Scanner(System.in);
         HttpStatusImageDownloader downloader = new HttpStatusImageDownloader();
         int intCode = 0;
         while (true) {
             System.out.println("Please enter the status of the image(example: 200) or exits enter (exit): ");
             String code = input.nextLine();
-            if(code.equalsIgnoreCase("exit")){
+            if (code.equalsIgnoreCase("exit")) {
                 break;
             }
             if (code.isBlank()) {
